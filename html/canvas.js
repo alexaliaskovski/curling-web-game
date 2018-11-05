@@ -122,13 +122,16 @@ function handleRockCollision(rock) {
 	
 }
 
-function getRockAtLocation(aCanvasX, aCanvasY) {
+//I will fix this so line draws properly
+function getRockAtLocation(canvasX, canvasY) {
 	let context = longViewCanvas.getContext("2d")
 	for (let i = 0; i < rocks.length; i++) {
-		let distanceX = Math.abs(rocks[i].x - aCanvasX)
-		let distanceY = Math.abs(rocks[i].y - aCanvasY)
+		let distanceX = Math.abs(rocks[i].x - canvasX)
+		let distanceY = Math.abs(rocks[i].y - canvasY)
 		let distanceFromRock = Math.hypot(distanceX, distanceY)
 		console.log("Distance: " + distanceFromRock)
+		console.log("Distance X: " + distanceX)
+		console.log("Distance Y: " + distanceY)
 		if (distanceFromRock < rockRadius) { return(rocks[i]) }
 	}
 	return(null)
