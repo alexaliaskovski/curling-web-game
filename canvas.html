@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<!--
+
+Open two browsers at http://localhost:3000/canvas.html
+
+-->
+<html>
+	<head>
+	 <title>Canvas Size</title>
+	 <script src="/socket.io/socket.io.js"></script>
+	 
+		<style> 
+			body { background: #dddddd; }
+		 
+			/*element selectors: */
+			canvas {
+				margin: 20px;
+				padding: 0px; 				/*important here for padding to be 0 for mouse calculations */
+			}
+			
+			/* class selectors: */
+			.canvas {			
+				background: #ffffff;
+				border: thin inset #aaaaaa;
+			}
+		</style>
+	</head>
+
+	<body>
+	<div class="grid-container">
+		<canvas id='closeUpCanvas' 	class='canvas' class="grid-item" width='600' height='600'></canvas>
+		<canvas id='longViewCanvas' class='canvas' class="grid-item" width='250' height='600'></canvas>
+	</div>
+	<script src='canvas.js'></script>
+	</body>
+</html>
