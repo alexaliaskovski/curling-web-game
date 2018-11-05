@@ -108,10 +108,7 @@ function update() {
 function moveRock(rock) {
 	rock.x += rock.deltaX
 	rock.y += rock.deltaY
-	console.log("rock x: " + rock.x)
-	console.log("rock y: " + rock.y)
 	
-	//NOT RIGHT, FIX
 	rock.deltaX /= 1.2
 	rock.deltaY /= 1.2
 	}
@@ -145,19 +142,12 @@ function getRockAtLocation(canvasX, canvasY) {
 
 //Howard fixes this to mirror long view canvas
 function drawCloseCanvas(context) {
-	context.fillStyle = "white"
-	context.fillRect(0, 0, longViewCanvas.width, longViewCanvas.height)
-	
-	let targetData = [
-		{"colour": "blue", "x": closeUpCanvas.width/2, "y": closeUpCanvas.height/2, "radius": 300},
-		{"colour": "white", "x": closeUpCanvas.width/2, "y": closeUpCanvas.height/2, "radius": 225},
-		{"colour": "red", "x": closeUpCanvas.width/2, "y": closeUpCanvas.height/2, "radius": 150},
-		{"colour": "white", "x": closeUpCanvas.width/2, "y": closeUpCanvas.height/2, "radius": 75}
-	]
-	
-	drawTarget(context, targetData)
-	
-	let theseRocks = []
+
+	closeUp = closeUpCanvas.getContext("2d");
+	closeUp.fillStyle = "white"
+	closeUp.fillRect(0, 0, longViewCanvas.width, longViewCanvas.height)
+
+	closeUp.drawImage(context.canvas,  0,0, 250, 250, 0, 0, 600, 600);
 }
 
 function drawLongCanvas(context) {
@@ -209,6 +199,18 @@ function render() {
 	drawLongCanvas(longViewCanvas.getContext("2d"))
 	drawCloseCanvas(closeUpCanvas.getContext("2d"))
 }
+
+function gameLoop() {
+	if (!mouseDown) {
+		update()
+		render()
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+//				GAME LOOP
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 function gameLoop() {
 	if (!mouseDown) {
