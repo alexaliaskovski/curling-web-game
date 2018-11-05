@@ -20,6 +20,7 @@ const numberRocks = 6											//number of rocks in the game (total)
 let rockBeingMoved = null										//rock being dragged by mouse
 const rockRadius = 10											//radius of rocks
 let rocksAreMoving = false										//whether or not there are rocks moving on the board
+let mouseDown = false
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //				INITIALIZE ROCKS
@@ -46,6 +47,7 @@ function handleMouseDown(e) {
 	let rect = longViewCanvas.getBoundingClientRect()
 	let canvasX = e.pageX - rect.left								//mouse location of x
 	let canvasY = e.pageY - rect.top								//mouse location of y
+	mouseDown = true
 	
 	rockBeingMoved = getRockAtLocation(canvasX, canvasY)			//sets rock being moved
 	if (rockBeingMoved != null) {
@@ -72,12 +74,13 @@ function handleMouseMove(e) {
 
 function handleMouseUp(e) {
 	console.log("mouse up")
+	mouseDown = false
 	e.stopPropagation()
 	
 	longViewCanvas.removeEventListener("mousemove", handleMouseMove)
 	longViewCanvas.removeEventListener("mouseup", handleMouseUp)
 	rocksAreMoving = true
-	
+	update()
 	render()
 	
 }
@@ -108,10 +111,10 @@ function moveRock(rock) {
 	console.log("rock x: " + rock.x)
 	console.log("rock y: " + rock.y)
 	
-	//multiply rock.x/y by some constant value to change deceleration but keep things proportionate
-	rock.deltaX -= rock.x
-	rock.deltaY -= rock.y
-}
+	//NOT RIGHT, FIX
+	rock.deltaX /= 1.2
+	rock.deltaY /= 1.2
+	}
 
 function handleWallCollision(rock) {
 	if ((rock.x + rock.radius > longViewCanvas.width) || (rock.x - rock.radius < 0))	{ rock.deltaX *= -1 }
@@ -122,7 +125,6 @@ function handleRockCollision(rock) {
 	
 }
 
-//I will fix this so line draws properly
 function getRockAtLocation(canvasX, canvasY) {
 	let context = longViewCanvas.getContext("2d")
 	for (let i = 0; i < rocks.length; i++) {
@@ -141,13 +143,21 @@ function getRockAtLocation(canvasX, canvasY) {
 //				RENDER DATA
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//Howard fixes this to mirror long view canvas
 function drawCloseCanvas(context) {
-	closeUp = closeUpCanvas.getContext("2d");
-	closeUp.fillStyle = "white"
-	closeUp.fillRect(0, 0, longViewCanvas.width, longViewCanvas.height)
-
-	closeUp.drawImage(context.canvas,  0,0, 250, 250, 0, 0, 600, 600);
-
+	context.fillStyle = "white"
+	context.fillRect(0, 0, longViewCanvas.width, longViewCanvas.height)
+	
+	let targetData = [
+		{"colour": "blue", "x": closeUpCanvas.width/2, "y": closeUpCanvas.height/2, "radius": 300},
+		{"colour": "white", "x": closeUpCanvas.width/2, "y": closeUpCanvas.height/2, "radius": 225},
+		{"colour": "red", "x": closeUpCanvas.width/2, "y": closeUpCanvas.height/2, "radius": 150},
+		{"colour": "white", "x": closeUpCanvas.width/2, "y": closeUpCanvas.height/2, "radius": 75}
+	]
+	
+	drawTarget(context, targetData)
+	
+	let theseRocks = []
 }
 
 function drawLongCanvas(context) {
@@ -196,9 +206,15 @@ function drawLine(canvasX, canvasY) {
 }
 	
 function render() {
-
 	drawLongCanvas(longViewCanvas.getContext("2d"))
-	drawCloseCanvas(longViewCanvas.getContext("2d"))
+	drawCloseCanvas(closeUpCanvas.getContext("2d"))
+}
+
+function gameLoop() {
+	if (!mouseDown) {
+		update()
+		render()
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -224,5 +240,5 @@ socket.on('rocksData', function(data) {
 document.addEventListener("DOMContentLoaded", function() {
 	longViewCanvas.addEventListener("mousedown", handleMouseDown)
 	render()
-	//setInterval(render, 100)
+	setInterval(gameLoop, 100)
 })
