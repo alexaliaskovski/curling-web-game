@@ -20,6 +20,7 @@ const numberRocks = 6											//number of rocks in the game (total)
 let rockBeingMoved = null										//rock being dragged by mouse
 const rockRadius = 10											//radius of rocks
 let rocksAreMoving = false										//whether or not there are rocks moving on the board
+let mouseDown = false
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //				INITIALIZE ROCKS
@@ -46,6 +47,7 @@ function handleMouseDown(e) {
 	let rect = longViewCanvas.getBoundingClientRect()
 	let canvasX = e.pageX - rect.left								//mouse location of x
 	let canvasY = e.pageY - rect.top								//mouse location of y
+	mouseDown = true
 	
 	rockBeingMoved = getRockAtLocation(canvasX, canvasY)			//sets rock being moved
 	if (rockBeingMoved != null) {
@@ -72,6 +74,7 @@ function handleMouseMove(e) {
 
 function handleMouseUp(e) {
 	console.log("mouse up")
+	mouseDown = false
 	e.stopPropagation()
 	
 	longViewCanvas.removeEventListener("mousemove", handleMouseMove)
@@ -105,12 +108,9 @@ function update() {
 function moveRock(rock) {
 	rock.x += rock.deltaX
 	rock.y += rock.deltaY
-	console.log("rock x: " + rock.x)
-	console.log("rock y: " + rock.y)
 	
-	//multiply rock.x/y by some constant value to change deceleration but keep things proportionate
-	rock.deltaX -= rock.x
-	rock.deltaY -= rock.y
+	rock.deltaX /= 1.2
+	rock.deltaY /= 1.2
 }
 
 function handleWallCollision(rock) {
@@ -147,7 +147,6 @@ function drawCloseCanvas(context) {
 	closeUp.fillRect(0, 0, longViewCanvas.width, longViewCanvas.height)
 
 	closeUp.drawImage(context.canvas,  0,0, 250, 250, 0, 0, 600, 600);
-
 }
 
 function drawLongCanvas(context) {
@@ -202,6 +201,18 @@ function render() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+//				GAME LOOP
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function gameLoop() {
+	if (!mouseDown) {
+		update()
+		render()
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //				SOCKET.IO
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -224,5 +235,5 @@ socket.on('rocksData', function(data) {
 document.addEventListener("DOMContentLoaded", function() {
 	longViewCanvas.addEventListener("mousedown", handleMouseDown)
 	render()
-	//setInterval(render, 100)
+	setInterval(gameLoop, 100)
 })
