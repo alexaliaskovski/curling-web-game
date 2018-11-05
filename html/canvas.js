@@ -1,7 +1,7 @@
 /*
 
 Open two browsers at http://localhost:3000/canvas.html
-testsetsetsetset
+
 */
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -139,8 +139,8 @@ function getRockAtLocation(aCanvasX, aCanvasY) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function drawCloseCanvas(context) {
-	context.fillStyle = "white"
-	context.fillRect(0, 0, longViewCanvas.width, longViewCanvas.height)
+	/*
+	
 	
 	let targetData = [
 		{"colour": "blue", "x": closeUpCanvas.width/2, "y": closeUpCanvas.height/2, "radius": 300},
@@ -152,6 +152,14 @@ function drawCloseCanvas(context) {
 	drawTarget(context, targetData)
 	
 	let theseRocks = []
+	*/
+	closeUp = closeUpCanvas.getContext("2d");
+	//longView = longViewCanvas.getContext("2d");
+	closeUp.fillStyle = "white"
+	closeUp.fillRect(0, 0, longViewCanvas.width, longViewCanvas.height)
+
+	closeUp.drawImage(context.canvas,  0,0, 250, 250, 0, 0, 600, 600);
+
 }
 
 function drawLongCanvas(context) {
@@ -200,8 +208,9 @@ function drawLine(canvasX, canvasY) {
 }
 	
 function render() {
-	drawCloseCanvas(closeUpCanvas.getContext("2d"))
+
 	drawLongCanvas(longViewCanvas.getContext("2d"))
+	drawCloseCanvas(longViewCanvas.getContext("2d"))
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
