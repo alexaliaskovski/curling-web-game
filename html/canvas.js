@@ -80,7 +80,7 @@ function handleMouseUp(e) {
 	longViewCanvas.removeEventListener("mousemove", handleMouseMove)
 	longViewCanvas.removeEventListener("mouseup", handleMouseUp)
 	rocksAreMoving = true
-	
+	update()
 	render()
 	
 }
@@ -111,7 +111,7 @@ function moveRock(rock) {
 	
 	rock.deltaX /= 1.2
 	rock.deltaY /= 1.2
-}
+	}
 
 function handleWallCollision(rock) {
 	if ((rock.x + rock.radius > longViewCanvas.width) || (rock.x - rock.radius < 0))	{ rock.deltaX *= -1 }
@@ -122,7 +122,6 @@ function handleRockCollision(rock) {
 	
 }
 
-//I will fix this so line draws properly
 function getRockAtLocation(canvasX, canvasY) {
 	let context = longViewCanvas.getContext("2d")
 	for (let i = 0; i < rocks.length; i++) {
@@ -141,7 +140,9 @@ function getRockAtLocation(canvasX, canvasY) {
 //				RENDER DATA
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//Howard fixes this to mirror long view canvas
 function drawCloseCanvas(context) {
+
 	closeUp = closeUpCanvas.getContext("2d");
 	closeUp.fillStyle = "white"
 	closeUp.fillRect(0, 0, longViewCanvas.width, longViewCanvas.height)
@@ -195,9 +196,15 @@ function drawLine(canvasX, canvasY) {
 }
 	
 function render() {
-
 	drawLongCanvas(longViewCanvas.getContext("2d"))
-	drawCloseCanvas(longViewCanvas.getContext("2d"))
+	drawCloseCanvas(closeUpCanvas.getContext("2d"))
+}
+
+function gameLoop() {
+	if (!mouseDown) {
+		update()
+		render()
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
