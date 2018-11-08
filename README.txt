@@ -17,13 +17,8 @@
 */
 
 Files:			server.js
-				html/assignment2.html
+				html/assignment3.html
 				html/canvas.js
-				html/jquery-1.11.3
-				songs/Sister Golden Hair.txt
-				songs/Peaceful Easy Feeling.txt
-				songs/Brown Eyed Girl.txt
-				songs/Never My Love.txt
 				node_modules/... (it is recommended to reinstall the node modules, will elaborate on this later)
 				
 Node Version:	v8.11.4
