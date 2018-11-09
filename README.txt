@@ -50,3 +50,4 @@ Execution:
 Issues:
 - When leaving the app open and restarting the server, the program would crash with an error. Make sure to close all instances of the game before restarting the server.
 - Collisions between rocks while there is only one instance of the game open work (moderately) fine. Collisions between difference players' rocks don't always work properly. Please test the collisions with only one tab open first. 
+- As long as there are no collisions between rocks (when multiple tabs are open) the game works perfectly fine. 
