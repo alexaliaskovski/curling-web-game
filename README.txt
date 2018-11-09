@@ -42,9 +42,11 @@ Launch:			1. In the command prompt, navigate to the directory containing the ser
 
 Execution:			
 			1. When first launching the app, all rocks will be grey, meaning that they cannot be used by anyone at the moment.
-			2. Enter your name in the textbox, and press the "Submit Request" button; this will assign you to three of the rocks.
-			3. If there are already two players currently playing, you will be placed in the spectator queue, where you cannot interact with any of the rocks, but you are free to watch. Note that you'll still be asked for your name before you can play. Once one of the players leave the game, the first spectator to join the game will be assigned to one of the player slots.
+			2. Click on either the "Join as Player 1" or "Join as Player 2" buttons to join as a player. If the buttons are greyed out, there are already too many players and you cannot join right now.
+			3. If there are already two players currently playing, you cannot interact with any of the rocks, but you are free to watch.
 			4. If you are one of the players, you can interact with the rocks. Click and drag on one of the rocks (note that you cannot interact with rocks that are not yours) to move them. The further you drag, the stronger the force applied to the rock will be.
+			5. When you're done playing, press the disconnect button to leave the game. If you close the browser before disconnecting, other players won't be able to play. When a player clicks the disconnect button, any other player can join as that player now. They will continue with the rocks where the last player left off. 
 
 Issues:
-- When leaving the app open and restarting the server, the program would crash with an error.
+- When leaving the app open and restarting the server, the program would crash with an error. Make sure to close all instances of the game before restarting the server.
+- Collisions between rocks while there is only one instance of the game open work (moderately) fine. Collisions between difference players' rocks don't always work properly. Please test the collisions with only one tab open first. 
