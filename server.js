@@ -1,8 +1,21 @@
 /*
 
-Open two browsers at http://localhost:3000/canvas.html
-
+	Alexandra Liaskovski-Balaba
+	101071309
+	alexandraliaskovskib@cmail.carleton.ca
+	
+	Howard Zhang
+	101069043
+	howardzhang@cmail.carleton.ca
+	
+	COMP2406 - Assignment #3
+	server.js
+	8th November 2018, 10pm
+	
+	Testing: The page can be found at http://localhost:3000/assignment3.html in the browser
+	
 */
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //				GLOBALS
@@ -14,6 +27,11 @@ const fs = require('fs') 							//file system to server static files
 const url = require('url'); 						//to parse url strings
 const PORT = process.env.PORT || 3000 				//useful if you want to specify port through environment variable
 const ROOT_DIR = 'html' 							//dir to serve static files from
+let players = [null, null]							//current players in the game
+let rocks = []										//rocks that are in play
+
+let playerOneDisabled = false
+let playerTwoDisabled = false
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //				MIME TYPES
@@ -33,6 +51,92 @@ const MIME_TYPES = {
 	svg: 	"image/svg+xml",
 	txt: 	"text/plain"
 }
+
+//receive updated rock info and resend to all 
+io.on('connection', function(socket){
+	socket.on('rocksData', function(data){
+		//console.log(rocks)
+		console.log('RECEIVED BOX DATA: ' + data)
+		rocks[data.num].x = data.x
+		rocks[data.num].y = data.y
+		rocks[data.num].dx = data.dx
+		rocks[data.num].dy = data.dy
+		io.emit('rocksData', data)
+	})
+})
+
+//user requests for current rock array when joining the game
+io.on('connection', function(socket){
+	socket.on('askForRocks', function(data){
+		console.log('RECEIVED BOX DATA: ' + data)
+		let dataObj = {
+			rockTest: rocks,
+			playerOneStatus: playerOneDisabled,
+			playerTwoStatus: playerTwoDisabled
+		}
+		let resendArray = JSON.stringify(dataObj)
+		io.emit('askForRocks', resendArray)
+	})
+})
+
+//updates rock colours (for user connect/disconnect)
+io.on('connection', function(socket){
+	socket.on('rocksColour', function(data){
+		console.log('RECEIVED BOX DATA: ' + data)
+		for(let i = 0; i<rocks.length; i++){
+			if (i == data.num) {rocks[i].colour = data.col}
+		}
+		io.emit('rocksColour', data) 				//broadcast to everyone including sender
+	})
+})
+
+//populates rock array in the server
+io.on('connection', function(socket){
+	socket.on('newRockArray', function(data){
+		let receivedData = JSON.parse(data)
+		rocks = receivedData.rockArray
+		
+		let dataObj = {rockArray: rocks}
+		let resendArray = JSON.stringify(dataObj)
+		io.emit("retrieveRocks", resendArray)
+	})
+})
+
+//handles adding a new player to the game
+io.on('connection', function(socket){
+	socket.on('newPlayer', function(data){
+		let receivedData = JSON.parse(data)
+		player = {name: receivedData.name}
+		if(players[player.name - 1] == null){
+			players[player.name - 1] = player
+			if (player.name == 1) {playerOneDisabled = true}
+			else if (player.name == 2) {playerTwoDisabled = true}
+			
+			let playerData = {playerOne: playerOneDisabled, playerTwo: playerTwoDisabled}
+			console.log(playerData)
+			let emitData = JSON.stringify(playerData)
+			io.emit('playersState', emitData)
+		}
+	})
+})
+
+//handles removing a player from the game
+io.on('connection', function(socket){
+	socket.on('removePlayer', function(data){
+		let receivedData = JSON.parse(data)
+		player = {name: receivedData.name}
+		if(players[player.name - 1] != null) {
+			players[player.name - 1] = null
+			console.log(player.name)
+			if (player.name == 1) {playerOneDisabled = false}
+			else if (player.name == 2) {playerTwoDisabled = false}
+			
+			let playerData = {playerOne: playerOneDisabled, playerTwo: playerTwoDisabled}
+			let emitData = JSON.stringify(playerData)
+			io.emit('playersState', emitData)
+		}
+	})
+})
 
 function get_mime(filename) {
 	for (let ext in MIME_TYPES) {
@@ -85,12 +189,8 @@ function handler(request, response) {
 	})
 }
 
-io.on('connection', function(socket){
-	socket.on('rocksData', function(data){
-		console.log('RECEIVED BOX DATA: ' + data)
-		io.emit('rocksData', data) 					//broadcast to everyone including sender
-	})
-})
+
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //				CONSOLE.LOG START UP
@@ -98,4 +198,4 @@ io.on('connection', function(socket){
 
 console.log("Server Running at PORT: 3000	CTRL-C to quit")
 console.log("To Test:")
-console.log("Open several browsers at: http://localhost:3000/canvas.html")
+console.log("Open several browsers at: http://localhost:3000/assignment3.html")
