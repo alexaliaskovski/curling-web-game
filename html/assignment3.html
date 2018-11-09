@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<!--
+	Alexandra Liaskovski-Balaba
+	101071309
+	alexandraliaskovskib@cmail.carleton.ca
+	
+	Howard Zhang
+	101069043
+	howardzhang@cmail.carleton.ca
+	
+	COMP2406 - Assignment #3
+	assignment3.html
+	8th November 2018, 10pm
+	
+	Testing: The page can be found at http://localhost:3000/assignment3.html in the browser
+-->
+<html>
+	<head>
+	 <title>Canvas Size</title>
+	 <script src="/socket.io/socket.io.js"></script>
+	 
+		<style> 
+			body { background: #dddddd; }
+		 
+			/*element selectors: */
+			canvas {
+				margin: 20px;
+				padding: 0px; 				/*important here for padding to be 0 for mouse calculations */
+			}
+			
+			/* class selectors: */
+			.canvas {			
+				background: #ffffff;
+				border: thin inset #aaaaaa;
+			}
+		</style>
+	</head>
+
+	<body>
+	<input type="button" value = "Join as Player 1" onClick="handlePlayerOne()" id = "playerOneButton" !disabled>
+	<input type="button" value = "Join as Player 2" onClick="handlePlayerTwo()" id = "playerTwoButton" !disabled>
+	<input type="button" value = "Disconnect" onClick="handleDisconnect()" id = "disconnectButton" disabled>
+	<p id = "infoBox">You are watching.</p>
+	<p>If you are a player, drag and release your rocks to play.</p>
+	<div class="grid-container">
+		<canvas id='closeUpCanvas' 	class='canvas' class="grid-item" width='600' height='600'></canvas>
+		<canvas id='longViewCanvas' class='canvas' class="grid-item" width='250' height='600'></canvas>
+	</div>
+	<p>Click on a player button to play. If there are two players, you cannot join. If you are a player, press the disconnect button to stop playing.</p>
+	<p>Click on a rock to move it, and drag in the opposite direction. Let go to release the rock.</p>
+	<script src='canvas.js'></script>
+	</body>
+</html>
